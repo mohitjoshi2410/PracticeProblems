@@ -1,0 +1,172 @@
+#include<iostream>
+#include<Stack>
+using namespace std;
+
+struct node
+{
+    char letter;
+    node *right;
+}*head = NULL;
+
+class list
+{
+ private:
+         int count;
+         long sum;
+ public: 
+ 		node * insert(node*,char);
+        void display(node *);
+        node * separateVowels(node*);
+        void showCount();
+        void showSum();
+        list()
+        {
+            head=NULL;
+            count=0;
+            sum=0;
+        }
+};
+
+int main()
+{
+    int choice;
+    char letter;
+    int k;
+    int element;
+    int maxSum =0;
+//    node * head = new node;
+    list ST;
+    do
+    {
+        cout << endl << "Enter 1: Insert a node in the LL";
+        cout << endl << "Enter 2: Display the LL";
+        cout << endl << "Enter 3: Separate the vowels in the LL";
+        
+		cout << endl << "Enter 8: Exit";
+        cout << endl << "Enter your choice ";
+
+        cin>>choice;
+        switch(choice)
+        {
+           case 1: cout << "Enter value: To quit enter 0" << endl;
+                   cin>>letter;
+                   while(letter!='x')
+                   {
+                      head=ST.insert(head,letter);
+                      cin>>letter;
+                   };
+                   break;
+           case 2: cout << "The list is : \n";
+                   ST.display(head);
+                   break;
+           case 3: cout << "The list with separated vowels is " << endl;
+                   head = ST.separateVowels(head);
+                   ST.display(head);
+                   break;
+		   case 8: cout << "END";
+                   break;
+        };
+  }while(choice!=8);
+  //system("pause");
+  return 0;
+}
+
+node * list::insert(node *head,char letter)
+{
+	node * temp = head;
+	if(temp==NULL)
+      {
+		node *  newnode = new node;
+        newnode->right=NULL;
+        newnode->letter=letter;
+        head = newnode;
+		count++;
+      }
+     else
+      {
+      	while(temp->right!=NULL)
+      	{
+      		temp = temp->right;
+      	};
+        node * newnode=new node;
+        newnode->right=NULL;
+        newnode->letter=letter;
+        temp->right=newnode;
+        count++;
+      }
+	 return(head);
+}
+
+void list::display(node *head)
+{
+node * temp = new node;
+        
+    if(head==NULL)
+      {
+        cout<<"Empty List \n";
+      }
+     else
+      {
+      	temp = head;
+      	while(temp!=NULL)
+      	{
+      		cout<<temp->letter<<"->";
+			  temp = temp->right;
+      		
+      	}
+      }
+}
+
+node* list::separateVowels(node *head)
+{
+	node * temp = head;
+	node * prev = NULL;
+	node * tail = NULL;
+	int c=0;
+	
+	if(head==NULL)
+      {
+        cout<<"Empty List \n";
+        return NULL;
+      }
+     else
+      {
+      	temp = head;
+      	while(temp!=NULL)
+      	{
+      		tail = temp;
+      		temp=temp->right;
+      		c++;
+      	}
+      }
+	
+	temp = head;
+	if(temp==NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		int i = 0;
+		while(i < c)
+		{
+			 if(temp->letter == 'a' || temp->letter == 'e' || temp->letter == 'i' || temp->letter == 'o' || temp->letter == 'u')
+			 {
+			 	if(prev!=NULL) prev->right=temp->right;
+			 	if(temp==head) head=head->right;
+			 	tail->right=temp;
+			 	temp=temp->right;			 	
+				tail=tail->right;
+			 	tail->right=NULL;
+			 	
+			 }
+			 else
+			 {
+			 	prev = temp;
+			 	temp=temp->right;	
+			 }
+			 i++;
+		}
+	}
+	return(head);
+}
