@@ -1,0 +1,258 @@
+#include<iostream>
+#include<Stack>
+using namespace std;
+
+struct node
+{
+    int num;
+    node *next;
+    node *random;
+}*head = NULL;
+
+struct node * head2 = NULL;
+
+class list
+{
+ private:
+         int count;
+         long sum;
+ public: 
+ 		node * insert(node*,int);
+        void display(node *);
+        void makeRandomPointer(node *,int,int);
+        node * makeClone(node*);
+        node * makeCloneWOChange(node*);
+        void showCount();
+        void showSum();
+        list()
+        {
+            head=NULL;
+            head2=NULL;
+            count=0;
+            sum=0;
+        }
+};
+
+
+int main()
+{
+	int choice;
+    int digit,a,b;
+    int k;
+    int element;
+
+    list ST;
+    do
+    {
+        cout << endl << "Enter 1: Insert a node in the LL";
+        cout << endl << "Enter 2: Display the LL";
+        cout << endl << "Enter 3: Make random pointers";
+        cout << endl << "Enter 4: Make clone";
+        cout << endl << "Enter 5: Make clone without change";
+                
+        cout << endl << "Enter 8: Exit";
+        cout << endl << "Enter your choice ";
+
+        cin>>choice;
+        switch(choice)
+        {
+           case 1: cout << "Enter value: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      head=ST.insert(head,digit);
+                      cin>>digit;
+                   };
+                   break;
+           case 2: cout << "The list is : \n";
+                   ST.display(head);
+                   break;
+		   case 3: cout<<"Enter random pointer node nos. : To quit enter 0\n";
+		   		   cin>>a>>b;
+                   while(a!=0 || b!=0)
+                   {
+                      ST.makeRandomPointer(head,a,b);
+                      cin>>a>>b;
+                   };
+		   		   
+				   break;
+		   case 4: head2 = ST.makeClone(head);
+		   		   ST.display(head2);
+		   		   break;
+		   case 5: head2 = ST.makeCloneWOChange(head);
+		   		   ST.display(head2);
+		   		   break;
+		   case 8: cout << "END";
+                   break;
+        };
+  }while(choice!=8);
+  //system("pause");
+  return 0;
+}
+
+node * list::insert(node *head,int digit)
+{
+	node * temp = head;
+	if(temp==NULL)
+      {
+		node *  newnode = new node;
+        newnode->next=NULL;
+        newnode->random=NULL;
+        newnode->num=digit;
+        head = newnode;
+		count++;
+      }
+     else
+      {
+      	while(temp->next!=NULL)
+      	{
+      		temp = temp->next;
+      	};
+        node * newnode=new node;
+        newnode->next=NULL;
+        newnode->random=NULL;
+        newnode->num=digit;
+        temp->next=newnode;
+        count++;
+      }
+	 return(head);
+}
+
+void list::display(node *head)
+{
+node * temp = new node;
+        
+    if(head==NULL)
+      {
+        cout<<"Empty List \n";
+      }
+     else
+      {
+      	temp = head;
+      	while(temp!=NULL)
+      	{
+      		cout<<temp->num<<"->";
+			temp = temp->next;      		
+      	}
+      	temp = head;
+      	cout<<"\n";
+      	while(temp!=NULL)
+      	{
+      		if(temp->random!=NULL)
+			  	cout<<temp->num<<"-->"<<temp->random->num<<" ";
+			temp = temp->next;
+      	}
+      }
+}
+
+void list::makeRandomPointer(node * head,int a,int b)
+{
+	int count=0;
+	node * Anode , *Bnode;
+	
+	while(head!=NULL || Anode==NULL || Bnode==NULL)
+	{
+		count++;
+		if(count==a) Anode = head;
+		if(count==b) Bnode = head;
+		head=head->next;		
+	}
+	if(Anode && Bnode)
+	{
+		Anode->random=Bnode;
+	}
+	else if(a>count || b>count)
+	{
+		cout<<"Entry not correct";
+	}
+}
+
+node * list::makeClone(node* head)
+{
+	node * headnode = head, * headnode2, * head2;
+	while(head!=NULL)
+	{
+		node * temp = new node;
+		temp->num=head->num;
+		temp->next=head->next;
+		temp->random=NULL;
+		head->next=temp;
+		head=temp->next;		
+		if(headnode2 == NULL)	headnode2=temp;
+	}
+	head = headnode;
+	head2 = headnode2;
+	while(head!=NULL && head2 != NULL)
+	{
+		if(head->random != NULL)
+			head2->random=head->random->next;
+		head=head->next->next;
+		if(head2->next != NULL)
+			head2=head2->next->next;
+		else
+			head2=NULL;
+	}
+	head = headnode;
+	head2 = headnode2;
+	while(head!=NULL && head2 != NULL )
+	{
+		head->next=head->next->next;
+		head=head->next;
+		if(head2->next!=NULL)
+			head2->next=head2->next->next;
+		else
+			head2->next=NULL;
+			head2=head2->next;
+	}
+	return(headnode2);
+}
+
+node * list::makeCloneWOChange(node* head)
+{
+	node * headnode = head, * headnode2, * head2, *prev, *rand;
+	int count=0,c=0;
+	while(head!=NULL)
+	{
+		node * temp = new node;
+		temp->num=head->num;
+		temp->next=NULL;
+		temp->random=NULL;
+		
+		if(prev!=NULL)	prev->next=temp;
+		if(headnode2 == NULL)	headnode2=temp;
+		
+		prev=temp;
+		head=head->next;
+		count++;
+	}
+	head = headnode;
+	head2 = headnode2;
+	while(head!=NULL && head2 != NULL)
+	{
+		rand = NULL;
+		if(head->random != NULL)
+			rand = head->random;
+		c=0;
+		while(rand != NULL)
+			{
+				rand = rand->next;
+				c++;
+			}
+		c=count-c;
+		rand = headnode2;
+		if(head->random == NULL)
+			head2->random = NULL;
+		else
+		{
+			while(c>0)
+			{
+				rand = rand->next;
+				c--;
+			}
+			head2->random=rand;
+		}
+		head2=head2->next;
+		head=head->next;		
+	}
+	return(headnode2);
+}
