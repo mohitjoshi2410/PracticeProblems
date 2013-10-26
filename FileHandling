@@ -1,0 +1,32 @@
+#include<iostream>
+#include<fstream>
+
+using namespace std;
+
+int main() {
+
+ ifstream myReadFile;
+ myReadFile.open("text.txt");
+ char name[100],maxStu[100];
+ int marks1, marks2, marks3, max=0;
+ float avg;
+ if (myReadFile.is_open()) {
+ while (!myReadFile.eof()) {
+
+	
+    myReadFile >> name >> marks1 >> marks2 >> marks3;
+    avg = (marks1+marks2+marks3)/3;
+    if(avg > max)
+    {
+    	max = avg;
+    	memcpy(maxStu, name ,sizeof name);
+    }
+    cout<<name<<marks1<<marks2<<marks3;
+
+
+ }
+ cout <<"\n"<< maxStu <<" "<<max;
+}
+myReadFile.close();
+return 0;
+}
