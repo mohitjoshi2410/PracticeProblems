@@ -1,0 +1,156 @@
+#include<iostream>
+#include<Stack>
+#include<vector>
+#include<queue>
+#include<map>
+
+using namespace std;
+
+class Set
+{
+ private:
+         int a;
+         int b;
+ public: 
+ 		Set(int first, int second)
+		{
+            a = first;
+            b = second;
+        }
+        int as()
+        {
+        	return a;
+        }
+        int bs()
+        {
+        	return b;
+        }
+};
+
+int main()
+{
+    int n,a,b,value=0;
+    cout<<"Enter no. of elephants\n";
+    cin>>n;
+    std::vector<Set> pairs;
+    std::priority_queue<int, vector<int>, std::greater<int> > min_heapAS;
+    std::priority_queue<int, vector<int>, std::greater<int> > min_heapBS;
+    typedef std::map<int, int > dictionary;
+	dictionary dict;
+    for(int i=1; i<=n; i++)
+	{
+		cout<<"Enter life range of elephant no. "<<i<<" \n";
+		cin>>a>>b;
+		Set pair(a,b);
+		pairs.push_back(pair);
+	}
+	for(int i=1; i<=n; i++)
+	{
+		cout<<"Pair no. "<<i<<" = (";
+		Set pair = pairs[i-1];
+		
+		min_heapAS.push(pair.as());
+			cout<<pair.as()<<", ";
+			
+		pair.bs();
+		min_heapBS.push(pair.bs());
+			cout<<pair.bs()<<")\n";
+	}
+	a = min_heapAS.top();
+	min_heapAS.pop();
+	value++;
+	dict.insert(std::make_pair(a, value));
+	if (!min_heapAS.empty())
+ 	 	{
+ 	 		a = min_heapAS.top();
+ 	 		min_heapAS.pop();
+ 	 	}
+	else
+ 		a = NULL;
+	if (!min_heapBS.empty())
+ 	 	{
+ 	 		b = min_heapBS.top();	
+			min_heapBS.pop();
+ 	 	}
+	else
+		b = NULL;
+
+	while (!(min_heapAS.empty()) && !(min_heapBS.empty()))  
+     {  
+     	if(a==b)
+		 {
+		 	if(dict.find(a) == dict.end())
+		 	{
+		 		dict.insert(std::make_pair(a, value));
+		 	}
+		 	if (!min_heapAS.empty())
+		 	 	{
+		 	 		a = min_heapAS.top();
+		 	 		min_heapAS.pop();
+		 	 	}
+		 	else
+		 		a = NULL;
+			if (!min_heapBS.empty())
+		 	 	{
+		 	 		b = min_heapBS.top();	
+					min_heapBS.pop();
+		 	 	}
+			else
+				b = NULL;		 	
+		 } 
+		else if(a<b || b==NULL)
+		 {
+		 	value++;
+		 	if(dict.find(a) == dict.end())
+		 	{
+		 		dict.insert(std::make_pair(a, value));
+		 	}
+		 	else
+		 	{
+		 		(dict.find(a))->second = value;
+		 	}
+		 	if (!min_heapAS.empty())
+		 	 	{
+		 	 		a = min_heapAS.top();
+		 	 		min_heapAS.pop();
+		 	 	}
+		 	else
+		 		a = NULL;
+		 }  
+		 else if(b<a || a==NULL)
+		 {
+		 	value--;
+		 	if(dict.find(b) == dict.end())
+		 	{
+		 		dict.insert(std::make_pair(b, value));
+		 	}
+		 	else
+		 	{
+		 		(dict.find(b))->second = value;
+		 	}
+		 	if (!min_heapBS.empty())
+		 	 	{
+		 	 		b = min_heapBS.top();	
+					min_heapBS.pop();
+		 	 	}
+			else
+				b = NULL;
+		 }  
+     }  
+	 
+	 dictionary::iterator iter;
+	 int maxYear = 0;
+	 int maxValue = 0;
+	 for (iter = dict.begin(); iter != dict.end(); iter++) 
+	 {
+           if(maxValue<(iter->second))
+           {
+           	maxValue = iter->second;
+           	maxYear = iter->first;
+           }           
+     }
+     cout<<"\n Max no. of elephants alive are : " <<maxValue<<" in the year "<<maxYear;
+	 
+  //system("pause");
+  return 0;
+}
