@@ -1,0 +1,396 @@
+#include<iostream>
+#include<Queue>
+#include<map>
+#include<list>
+#include<vector>
+#include<stack>
+using namespace std;
+
+struct node
+{
+    long num;
+    node *left;
+    node *right;
+    node *next;
+}*tree;
+
+node * tree2;
+node * prev;
+bool areIsomorphic(node *, node*);
+
+class binaryTree
+{
+ private:
+         int count;
+         long sum;
+ public:
+         typedef std::list<int> listu;
+		 typedef std::map<int, listu > dictionary;
+		 dictionary dict;
+ public: 
+        node *delnum(long,node *);
+        node *insert(node *,long);
+        void deletenode(long,node *);
+        void search(node *,long);
+        void preorder(node *);
+        void inorder(node *);
+        void postorder(node *);
+		void showCount();
+        void showSum();
+        void destroy_tree(node *);
+        void display(node *);
+        void createLLists(node *);
+		
+        binaryTree()
+        {
+            tree=NULL;
+            count=0;
+            sum=0;
+        }
+};
+
+void printSwappedNodes(vector<node*>);
+vector<node*>::iterator ilr;
+int ele,nod1,nod2;
+
+int main()
+{
+    int choice, n;
+    list<node*>::iterator itr;
+    long digit;
+    int element, height;
+    int maxSum =0;
+    int hasSum;
+    int findSum = 0;
+    int node1, node2;
+    bool b;
+    int arr[20];
+    node* temp;
+    list<node*> listMe;
+    vector<node*> inorderList;
+    binaryTree BT,MT;
+    do
+    {
+        cout << endl << "Enter 1: Insert a node in the BT";
+        cout << endl << "Enter 2: Search a node in BT";
+        cout << endl << "Enter 3: Display(preorder)the BT";
+        cout << endl << "Enter 4: Display(inorder)the BT";
+        cout << endl << "Enter 5: Display(postorder) the BT";
+        cout << endl << "Enter 6: Delete the element";
+        cout << endl << "Enter 7: Count the number of nodes";
+        cout << endl << "Enter 8: Calculate the depth of the tree";
+        cout << endl << "Enter 9: Calculate the leaf number of leaf nodes";
+        cout << endl << "Enter 10: Calculate the sum of all the nodes";
+    	cout << endl << "Enter 11: Destroy Tree";
+    	cout << endl << "Enter 12: Make LL for each level in a BT";
+		
+		cout << endl << "Enter 50: Exit";
+        cout << endl << "Enter your choice ";
+
+        cin>>choice;
+        switch(choice)
+        {
+           case 1: cout << "Enter value: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      tree=BT.insert(tree,digit);
+                      cin>>digit;
+                   };
+                   break;
+           case 2: cout << "Enter the number to be searched";
+                   cin>>digit;
+                   BT.search(tree,digit);
+                   break;
+           case 3: cout << endl << "preorder traversing TREE" << endl;
+                   BT.preorder(tree);
+                   break;
+           case 4: cout << endl << "inorder traversing TREE" << endl;
+                   BT.inorder(tree);
+                   break;
+           case 5: cout << endl << "postorder traversing TREE" << endl;
+                   BT.postorder(tree);
+                   break;
+           case 6: cout << "Enter element which do you want delete from  the BT" << endl;
+                   cin>>digit;
+                   BT.deletenode(digit,tree);
+                   break;
+           case 7: BT.showCount();
+                   break;
+           case 8: cout << endl << "highest sum of a node in the TREE is" << endl;
+           		   break;
+           case 9: break;
+           case 10: BT.showSum();
+           		    break;
+           case 11: BT.destroy_tree(tree);
+		   			break;
+           case 12: BT.createLLists(tree);
+		   			break;
+		   case 50: cout << "END";
+                   	break;
+        };
+  }while(choice!=50);
+  //system("pause");
+  return 0;
+}
+
+
+node * findParent(int count, node* tree)
+{
+	int c=0 ;
+	node * temp;
+	queue<node *> que;
+	que.push(tree);
+	while(! que.empty())
+	{
+		temp = que.front();
+		que.pop();
+		c++;
+		if(c==count/2)
+			return temp;
+		que.push(temp->left);
+		que.push(temp->right);
+	}
+	
+}
+
+node * binaryTree::insert(node *tree,long digit)
+{
+	
+	if(tree==NULL)
+      {
+        tree=new node;
+        tree->left=tree->right=NULL;
+        tree->num=digit;
+		count++;        
+        sum+=digit;
+      }
+     else
+	   {
+	   		node * parent, *temp;
+			parent = findParent(count + 1, tree);
+	   		temp = new node;
+	   		temp->left=temp->right=NULL;
+	   		temp->num=digit;
+	   		count++;
+			if(count%2 == 0)
+	   			{
+	   				parent->left = temp;
+	   				
+	   				sum+=digit;
+				}	
+			else
+				{
+					parent->right = temp;
+					sum+=digit;	
+				}	              	   				   		         
+	   }	
+	   return tree;
+}
+
+void binaryTree::deletenode(long digit,node *nodeo)
+{
+    node *r,*q,*p=nodeo,*temp;
+    bool l=false;
+    if(tree==NULL)
+    {
+      cout << endl << "Tree is empty.";
+    }
+
+    //recursively find the node to be deleted
+    if(digit < nodeo->num)
+    {
+       p=nodeo;
+       l=true;
+       deletenode(digit,nodeo->left);
+    }                   
+    if(digit > nodeo->num)
+    {
+       p=nodeo;
+       l=false;
+       deletenode(digit,nodeo->right);
+    }
+
+    q=nodeo;
+    // if the given nodeo is a leaf node it can be safely deleted
+    if((q->right==NULL)&&(q->left==NULL))
+    {
+         if(l==true)
+            p->left=NULL;
+         else
+            p->right=NULL;
+
+         delete q;
+    }                         
+    else 
+    {
+         // If it has one child, then also it can be safely deleted
+         // and replaced by its only child
+         if(q->right==NULL)
+         {
+           r=q->left;
+           if(l==true)
+                p->left=r;
+           else
+                p->right=r;
+           delete q;
+         }                  
+         else if(q->left==NULL)
+         {
+              r=q->right;
+              if(l==true)
+                p->left=r;
+              else
+                p->right=r;
+              delete q;
+         }
+         // If it has two children then we can either
+         // replace it by the value of its immediate successor
+         // or immediate predecessor, we have chosen, the 
+         // immediate successor here
+         else
+         {
+             r=q->right;
+             if(r->left=NULL)
+             {
+                if(l==true)
+                    p->left=r;
+                else
+                    p->right=r;
+             }
+             else
+             {
+                 while(r->left!=NULL)
+                 {
+                  temp=r;
+                  r=r->left;
+                 }
+                 q->num=r->num;
+                 temp->left==NULL;
+                 delete r;
+                 return;                 
+             }
+         }
+    }                                   
+}
+
+void binaryTree::search(node *tree,long digit)
+{
+    if(tree==NULL)
+       cout << "The number does not exits" << endl;
+   else
+    if(digit==tree->num)
+    cout << endl << "Number is " << digit;
+   else
+    if(digit < tree->num)
+       search(tree->left,digit);
+   else
+      search(tree->right,digit);
+}
+
+void binaryTree::preorder(struct node *tree)
+{
+    if(tree!=NULL)
+      {
+        cout << endl << tree->num;
+        preorder(tree->left);
+        preorder(tree->right);
+      }
+}
+
+void binaryTree::inorder(struct node *tree)
+{
+    if(tree!=NULL)
+        {
+        inorder(tree->left);
+        cout << endl << tree->num;
+        inorder(tree->right);
+        }
+}
+
+void binaryTree::postorder(struct node *tree)
+{
+    if(tree!=NULL)
+      {
+        postorder(tree->left);
+        postorder(tree->right);
+        cout << endl << tree->num;
+      }
+
+}
+
+//count no. of nodes
+void binaryTree::showCount()
+{
+     cout << "The no. of nodes are " << count << endl;
+}
+
+//sum of all nodes
+void binaryTree::showSum()
+{
+     cout << "The sum of all the nodes are " << sum << endl;
+}
+
+//Destroy the tree
+void binaryTree::destroy_tree(node *leaf)
+{
+  if(leaf!=NULL)
+  {
+    destroy_tree(leaf->left);
+    destroy_tree(leaf->right);
+    delete leaf;
+  }
+}
+
+void binaryTree::display(node *head)
+{
+node * temp = new node;
+        
+    if(head==NULL)
+      {
+        cout<<"Empty List \n";
+      }
+     else
+      {
+      	cout<<"\n";
+      	temp = head;
+      	while(temp!=NULL)
+      	{
+      		cout<<temp->num<<"->";
+			  temp = temp->next;
+      		
+      	}
+      }
+}
+
+void binaryTree::createLLists(node * tree)
+{
+	if(tree == NULL)
+		return;
+	queue<pair<node *, int> > q;
+	pair<node*, int> p, prev;
+	int level;
+	node * temp, *d = tree;
+	q.push(make_pair(tree, 0));
+	while(! q.empty())
+	{
+		p = q.front();
+		q.pop();
+		temp = p.first;
+		level = p.second;
+		//cout<<temp->num<<" ";
+		if(temp->left != NULL) q.push(make_pair(temp->left, level+1));
+		if(temp->right != NULL) q.push(make_pair(temp->right, level+1));
+		if(p.first != tree && prev.second == p.second)
+			prev.first->next = p.first;
+		else if(p.first!= tree)
+		{
+			prev.first->next = NULL;
+			display(d);
+			d = p.first;
+		}
+		prev = p;
+	}
+	p.first->next = NULL;
+	display(d);
+}
