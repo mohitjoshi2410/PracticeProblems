@@ -1,0 +1,388 @@
+#include<iostream>
+#include<string>
+#include<map>
+#include<stack>
+#include<cmath>
+#include<vector>
+
+using namespace std;
+
+string::iterator itr;
+
+char maxRepeatingChar(string, int &);
+string cutString1chars(string, string);
+void uniqueChars(string, int);
+string infixToPostfix(string);
+float expression(string);
+string allFirstLetters(string);
+int areAnagrams(string, string);
+string findStringContainingOthers(vector<string>);
+void removeDuplicateChars(char []);
+int main()
+{
+  	int n = 0,choice,key;
+  	char c;
+  	char str[20];
+  	float f;
+    string s,s2;
+    vector<string> vs;
+	
+	do
+	{
+		cout << endl << "Enter 1: Enter string";
+        cout << endl << "Enter 2: Display the string ";
+		cout << endl << "Enter 3: Find max repeating character";
+		cout << endl << "Enter 4: Remove chars from string 1 which are in string 2";
+		cout << endl << "Enter 5: Find unique chars in a string";
+		cout << endl << "Enter 6: Find value of an expression";
+		cout << endl << "Enter 7: Write all first letters of words in a sentence";
+		cout << endl << "Enter 8: Check if 2 strings are anagram or not";
+		cout << endl << "Enter 9: Enter array of strings";
+		cout << endl << "Enter 10: Display the array of strings";
+		cout << endl << "Enter 11: Find string which has max no. of other strings";
+		cout << endl << "Enter 12: Remove duplicate in a string w/o using hash";
+		
+		cout << endl << "Enter 30: Exit";
+		cout << endl << "Enter your choice ";
+		
+        cin>>choice;
+        switch(choice)
+        {
+           	case 1:		cout<<"Enter the string\n";
+					    std::cin.ignore();
+						std::getline(std::cin,s);
+					    break;
+			case 2:		cout<<"The string is\n";
+					    cout<<s;
+						break;
+			case 3:		cout<<"The max repeating character in the string is\n";
+						c = maxRepeatingChar(s, n);
+						cout<<c<<" - "<<n<<" times";
+						break;
+			case 4:		cout<<"Enter the 2nd string\n";
+						cin>>s2;
+						s = cutString1chars(s, s2);
+						cout<<"The first string after removing characters from string 2 is : "<<s<<endl;
+						break;
+			case 5:		cout<<"The unique chars in the string "<<s<<" are : ";
+						uniqueChars(s, n);
+						break;
+			case 6:		s2 = infixToPostfix(s);
+						f = expression(s2);
+						cout<<"The value of the expression "<<s<<" is : "<<f;
+						break;
+			case 7:		s2 = allFirstLetters(s);
+						cout<<"The string of first letters is : "<<s2;
+						break;
+			case 8:		cout<<"Enter the 2nd string\n";
+					    std::cin.ignore();
+						std::getline(std::cin,s2);
+					    
+						key = areAnagrams(s, s2);
+						if(key==-1)
+							cout<<"The strings are not anagrams"<<" \n";
+					    else
+							cout<<"The strings are anagrams \n";
+			case 9:		cout<<"Enter the strings. enter 0 to quit\n";
+					    std::getline(std::cin,s2);
+						while(s2!= "0")
+                   		{
+							vs.push_back(s2);
+							std::getline(std::cin,s2);
+					    	cout<<vs.size();
+                   		}
+                   		break;
+            case 10:	for(int i=1;i<vs.size();i++)
+            				cout<<i<<". "<<vs[i]<<"\n";
+						break;
+			case 11:	s2 = findStringContainingOthers(vs);
+						cout<<"The string having max no. of other strings is : "<<s2;
+						break;
+			case 12:	cout<<"Enter the string\n";
+						cin.ignore();
+					    gets(str);
+						/*while((c=getchar())!= '\n')
+					    	str[n++] = c;*/
+					    //str[n] = '\0';
+					    n = 0;
+						while(str[n] != '\0')
+							cout<<str[n++]; 
+						removeDuplicateChars(str);
+						while(str[n] != '\0')
+							cout<<str[n++]; 
+						break;
+			case 30:	cout<<"END";
+						break;
+		}
+					
+	}while(choice!=30);
+	
+	
+	//system("pause");
+  return 0;
+}
+
+void uniqueChars(string s, int n)
+{
+	string::iterator itr;
+	char c;
+	std::map <char,int> m;
+	for(itr = s.begin(); itr!=s.end() ; ++itr )
+    {
+    	if(m.find(*itr) == m.end())
+    	{
+    		m.insert(std::make_pair(*itr, 1));
+    		cout<<" "<<(*itr);
+		}
+    }
+}
+
+
+char maxRepeatingChar(string s, int &n)
+{
+	string::iterator itr;
+	char c;
+	std::map <char,int> m;
+	for(itr = s.begin(); itr!=s.end() ; ++itr )
+    {
+    	if(m.find(*itr) == m.end())
+    	{
+    		m.insert(std::make_pair(*itr, 1));
+		}
+		else
+	 	{
+	 		(m.find(*itr))->second++;
+	 		if(n < (m.find(*itr))->second)
+			{
+				 	n = (m.find(*itr))->second;
+					c = *itr;	 	
+			} 
+	 	}
+    }
+    return c;
+}
+
+string cutString1chars(string s, string s2)
+{
+	string::iterator itr;
+	std::map <char,int> m;
+	map<char, int>::iterator itrmap;
+	for(itr = s2.begin(); itr!=s2.end() ; ++itr )
+    {
+    	if(m.find(*itr) == m.end())
+    	{
+    		m.insert(std::make_pair(*itr, 1));
+		}
+    }
+    string s3;
+    
+    for(itr = s.begin(); itr!=s.end() ; ++itr )
+    {
+    	if(m.find(*itr) == m.end())
+    	{
+    		s3 += *itr;
+		}
+    }
+    return s3;
+}
+
+int prec(char symbol)          // function to find the precedence of the operators.........
+
+{
+	if(symbol== '(')
+		return 0;
+		
+	if(symbol== ')')
+		return 0;
+		
+	if(symbol=='+' || symbol=='-')
+		return 1;
+		
+	if(symbol=='*' || symbol=='/' || symbol=='%')
+		return 5;
+	
+	return -1;
+}
+
+int check_ch(char c)
+
+{
+	if(c=='+' || c=='*' || c=='/' || c=='(' || c==')' || c=='-' || c=='%' || c=='^')
+		return 1;
+	else
+		return 0;
+}
+
+string infixToPostfix(string s)
+{
+	stack<char> st;
+	string s1;
+	for(itr = s.begin(); itr!=s.end() ; ++itr )
+    {
+    	if(isdigit(*itr))
+    		s1 += *itr;
+    	else if(check_ch(*itr))
+    	{
+    		if((*itr) == ')')
+    		{
+    			while(!st.empty() && st.top() != '(')
+					{
+						s1 += st.top(); st.pop();
+					}
+				if(st.top() == '(') st.pop();
+    		}
+    		else
+    		{
+    			if(!st.empty() && st.top()!='(' && prec(st.top()) < prec(*itr))
+    				s1 += *itr; 
+    			else if(!st.empty() && st.top()!='(' && prec(st.top()) == prec(*itr))
+    			{
+    				s1 += st.top(); st.pop(); st.push(*itr);
+				}
+				else	
+					st.push(*itr);
+			}
+    	}
+	}
+	while(!st.empty())
+	{
+		if(st.top() == '(')	st.pop();
+		else
+		{
+			s1 += st.top();
+			st.pop();
+		}
+	}
+	return s1;
+}
+
+float evaluate(float a, float b, char c)
+{
+	float y;
+	switch(c)
+	{
+		case '+' : y=a+b;break;
+		case '-' : y=a-b;break;
+		case '*' : y=a*b;break;
+		case '/' : y=a/b;break;
+		case '^' : y=pow(a,b);break;
+		//case '%' : y=a%b;break;
+	}
+	return y;
+}
+
+float expression(string s)
+{
+	stack<float> st;
+	char c;
+	float n,n1,n2,n3;
+	for(itr = s.begin(); itr!=s.end() ; ++itr )
+    {
+    	if(isdigit(*itr))
+		{
+			n = float(*itr) - '0';
+			st.push(n);
+		}
+    	else
+    	{
+    		n1 = st.top(); st.pop();
+    		n2 = st.top(); st.pop();
+    		c = (*itr);
+    		n3 = evaluate(n2, n1, c);
+    		st.push(n3);
+    	}
+    }
+    return(st.top());
+}
+
+string allFirstLetters(string s)
+{
+	string s2;
+	for(itr = s.begin(); itr!=s.end() ; ++itr )
+    {
+    	if(itr==s.begin() && !(isspace(*itr)))
+    		s2+=(*itr);
+    	while(isspace(*itr))
+    	{
+    		++itr;
+    		if((itr)!= s.end() && !(isspace(*itr)))	s2+= (*itr);
+    	}
+	}
+	return s2;
+}
+
+int areAnagrams(string s, string s2)
+{
+	string::iterator itr;
+	std::map <char,int> m;
+	map<char, int>::iterator itrmap;
+	for(itr = s.begin(); itr!=s.end() ; ++itr )
+    {
+    	if(m.find(*itr) == m.end())
+    	{
+    		m.insert(std::make_pair(*itr, 1));
+		}
+		else
+			m[(*itr)]++;
+    }
+    
+    for(itr = s2.begin(); itr!=s2.end() ; ++itr )
+    {
+    	if(m.find(*itr) == m.end())
+    	{
+    		m.insert(std::make_pair(*itr, 1));	
+		}
+		else 
+			m[(*itr)]--;
+    }
+    for(itrmap = m.begin(); itrmap!=m.end(); ++itrmap)
+    {
+    	if(itrmap->second != 0)
+    		return -1;
+    }
+    
+    return 1;
+}
+
+string findStringContainingOthers(vector<string> vs)
+{
+	
+}
+
+void removeDuplicateChars(char str[])
+{
+	int dup[26];
+	int i=0, n=0, t=0;
+	while(str[n] != '\0')
+			dup[str[n++]] = 0; 
+		
+	while(str[i] != '\0')
+	{
+		dup[str[i]] += 1;
+		cout<<dup[str[i]]<<" ";
+		if(dup[str[i]] >1 )
+		{
+			str[i] = '/';
+			t++;
+		}	
+		i++;
+	}	
+	i=0;
+	while(str[i] != '\0')
+	{
+		
+		if(str[i] == '/' && i<n)
+		{
+			int j = i+1;
+			while(j<n && str[j] == '/')
+			{
+				j++;	
+			}
+			str[i] = str[j];
+			if (j<n)str[j] = '/';
+		}
+		cout<<str[i++]; 	
+	}
+	cout<<str[9]<<str[10]<<str[11]<<str[12];
+						
+}
