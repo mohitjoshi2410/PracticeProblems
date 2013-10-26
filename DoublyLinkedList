@@ -1,0 +1,273 @@
+#include<iostream>
+#include<Stack>
+using namespace std;
+
+struct node
+{
+    int num;
+    node *next;
+    node *prev;
+}*head = NULL;
+
+node *tail = NULL;
+node* BST = NULL;
+class DLL
+{
+ private:
+         int count;
+         long sum;
+ public: 
+ 		node * insert(node*,int);
+        void display(node *);
+        void reverseList(node* &);
+        void showCount();
+        void showSum();
+        void preorder(node*);
+        void inorder(node*);
+        void postorder(node*);
+        node * sortedListToBST(node*);
+        node * BSTtoSortedList(node*);
+        DLL()
+        {
+            head=NULL;
+            BST=NULL;
+            count=0;
+            sum=0;
+        }
+};
+
+
+int main()
+{
+	int choice;
+    int digit;
+    int k;
+    int element;
+    int maxSum =0;
+
+    DLL ST;
+    do
+    {
+        cout << endl << "Enter 1: Insert a node in the DLL";
+        cout << endl << "Enter 2: Display the DLL";
+        cout << endl << "Enter 3: Reverse the DLL";
+        cout << endl << "Enter 4: Display the BST";
+        cout << endl << "Enter 5: DLL to BST";
+        cout << endl << "Enter 6: BST to DLL";
+        
+        cout << endl << "Enter 8: Exit";
+        cout << endl << "Enter your choice ";
+
+        cin>>choice;
+        switch(choice)
+        {
+           case 1: cout << "Enter value: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      head=ST.insert(head,digit);
+                      cin>>digit;
+                   };
+                   break;
+           case 2: cout << "The list is : \n";
+                   ST.display(head);
+                   break;
+           case 3: cout<<"The reversed list is : "<<endl;
+		   		   ST.reverseList(head);
+		   		   ST.display(head);
+				   break;
+		   case 4: cout<<"The BST in pre, in and post order is : \n";
+		   		   ST.preorder(BST);cout<<endl;
+		   		   ST.inorder(BST);cout<<endl;
+		   		   ST.postorder(BST);cout<<endl;
+		   		   break;
+		   case 5: BST = ST.sortedListToBST(head);
+		   		   ST.preorder(BST);cout<<endl;
+		   		   ST.inorder(BST);cout<<endl;
+		   		   ST.postorder(BST);cout<<endl;
+		   		   break;
+		   case 6: head = ST.BSTtoSortedList(BST);
+		   		   ST.display(head);
+		   		   break;
+		   case 8: cout << "END";
+                   break;
+        };
+  }while(choice!=8);
+  //system("pause");
+  return 0;
+}
+
+//reverse a list
+void DLL::reverseList(node* & head)
+{
+	node * temp = head;
+	node * next;
+	node * prev = NULL;
+	while(temp!=NULL)
+	{
+		next = temp->next;
+		temp->next = prev;
+		prev = temp;	
+		if(next == NULL)
+			head = temp;
+		temp = next;
+	}
+}
+
+node * DLL::insert(node *head,int digit)
+{
+	node * temp = head, * prev;
+	if(temp==NULL)
+      {
+		node *  newnode = new node;
+        newnode->next=NULL;
+        newnode->prev=NULL;
+        newnode->num=digit;
+        head = newnode;
+        tail = newnode;
+		count++;
+      }
+     else
+      {
+      	while(temp->next!=NULL)
+      	{
+      		prev = temp;
+      		temp = temp->next;
+      	};
+        node * newnode=new node;
+        newnode->next=NULL;
+        newnode->prev=temp;
+        newnode->num=digit;
+        temp->next=newnode;
+        tail = newnode;
+        count++;
+      }
+	 return(head);
+}
+
+void DLL::display(node *head)
+{
+node * temp = new node;
+        
+    if(head==NULL)
+      {
+        cout<<"Empty List \n";
+      }
+     else
+      {
+      	temp = head;
+      	while(temp!=NULL)
+      	{
+      		cout<<temp->num<<"<->";
+			  temp = temp->next;
+      		
+      	}
+      }
+}
+
+void DLL::preorder(node *tree)
+{
+    if(tree!=NULL)
+      {
+        cout << " " << tree->num;
+        preorder(tree->prev);
+        preorder(tree->next);
+      }
+}
+
+void DLL::inorder(node *tree)
+{
+    if(tree!=NULL)
+        {
+        inorder(tree->prev);
+        cout << " " << tree->num;
+        inorder(tree->next);
+        }
+}
+void DLL::postorder(node *tree)
+{
+    if(tree!=NULL)
+      {
+        postorder(tree->prev);
+        postorder(tree->next);
+        cout << " " << tree->num;
+      }
+
+}
+
+
+node* sortedListToBSTRecur(node **, int);
+
+node* DLL::sortedListToBST(node *head)
+{
+    /*Count the number of nodes in Linked List */
+    int n = count;
+ 
+    /* Construct BST */
+    return sortedListToBSTRecur(&head, n);
+}
+ 
+// function that constructs balanced BST and returns root of it
+node* sortedListToBSTRecur(node **head_ref, int n)
+{
+    /* Base Case */
+    if (n <= 0)
+        return NULL;
+ 
+    node *left = sortedListToBSTRecur(head_ref, n/2);
+ 
+    /* head_ref now refers to middle node, make middle node as root of BST*/
+    node *root = *head_ref;
+ 
+    root->prev = left;
+ 
+    /* Change head pointer of Linked List for parent recursive calls */
+    *head_ref = (*head_ref)->next;
+ 
+    root->next = sortedListToBSTRecur(head_ref, n-n/2-1);
+ 
+    return root;
+}
+
+
+void BSTtoDLL(node *, node*&, node*&);
+node * DLL::BSTtoSortedList(node* tree)
+{
+	node *small;
+	node *large;
+	BSTtoDLL(tree, small, large);
+	
+	return small;
+}
+
+void BSTtoDLL(node * tree, node* &small, node* &large)
+{
+	if(tree==NULL)
+	{
+		return;
+	}
+	node * smallLo, *largeLo;
+	if(tree->prev != NULL)
+	{
+		BSTtoDLL(tree->prev, smallLo, largeLo);
+		largeLo->next  = tree;
+		tree->prev = largeLo;
+		small = smallLo;
+	}
+	else
+		small = tree;
+		
+	if(tree->next != NULL)
+	{
+		BSTtoDLL(tree->next, smallLo, largeLo);
+		smallLo->prev  = tree;
+		tree->next = smallLo;
+		large = largeLo;
+	}
+	else
+		large = tree;
+		
+	large->next = NULL;
+	small->prev = NULL;
+	return;
+}
