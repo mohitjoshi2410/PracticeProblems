@@ -1,0 +1,1011 @@
+#include<iostream>
+#include<Queue>
+#include<map>
+#include<list>
+#include<vector>
+#include<stack>
+using namespace std;
+
+struct node
+{
+    long num;
+    node *left;
+    node *right;
+}*tree;
+
+node * tree2;
+node * prev;
+bool areIsomorphic(node *, node*);
+
+class binaryTree
+{
+ private:
+         int count;
+         long sum;
+ public:
+         typedef std::list<int> listu;
+		 typedef std::map<int, listu > dictionary;
+		 dictionary dict;
+ public: 
+        node *delnum(long,node *);
+        node *insert(node *,long);
+        void deletenode(long,node *);
+        void search(node *,long);
+        void preorder(node *);
+        void inorder(node *);
+        void postorder(node *);
+		void showCount();
+        void showSum();
+        void destroy_tree(node *);
+        int hasPathSum(node*,int);
+        void printPaths(node*);
+        node* LCA(node*, int, int);
+        list<node*> pathbetween2Nodes(node *, int , int);
+        int isBinaryTree(node *);
+        void swap2nodes(node*,int,int);
+        void swappedNodesBST(node *, vector<node*>&);
+        int height(node*);
+		int diameter(node*);
+		int diameterOpt(node *, int* );
+		bool isBalanced( node *, int* );
+		void mirror(node*);
+		int isNodeSumOfChildren(node *);
+		void makeNodeSumOfChildren(node *);
+		void spiralTraversal(node *);
+		int sumOfNodesAtOddht(node *);
+		int searchFirst1(node *);
+		int findParent1(node *, int , node *);
+		node * constructBTfromInOrder(int [], int, int);
+		int maxSubtreeSumNode(node *, int &);
+		
+        binaryTree()
+        {
+            tree=NULL;
+            tree2=NULL;
+            prev = NULL;
+            count=0;
+            sum=0;
+        }
+};
+
+void printSwappedNodes(vector<node*>);
+vector<node*>::iterator ilr;
+int ele,nod1,nod2;
+
+int main()
+{
+    int choice, n;
+    list<node*>::iterator itr;
+    long digit;
+    int element, height;
+    int maxSum =0;
+    int hasSum;
+    int findSum = 0;
+    int node1, node2;
+    bool b;
+    int arr[20];
+    node* temp;
+    list<node*> listMe;
+    vector<node*> inorderList;
+    binaryTree BT,MT;
+    do
+    {
+        cout << endl << "Enter 1: Insert a node in the BT";
+        cout << endl << "Enter 2: Search a node in BT";
+        cout << endl << "Enter 3: Display(preorder)the BT";
+        cout << endl << "Enter 4: Display(inorder)the BT";
+        cout << endl << "Enter 5: Display(postorder) the BT";
+        cout << endl << "Enter 6: Delete the element";
+        cout << endl << "Enter 7: Count the number of nodes";
+        cout << endl << "Enter 8: Calculate the depth of the tree";
+        cout << endl << "Enter 9: Calculate the leaf number of leaf nodes";
+        cout << endl << "Enter 10: Calculate the sum of all the nodes";
+    	cout << endl << "Enter 11: Destroy Tree";
+    	cout << endl << "Enter 12: Find path with a given sum of nodes from root to a leaf";
+    	cout << endl << "Enter 13: Find all paths from root to leaves";
+    	cout << endl << "Enter 14: Find LCA for 2 nodes";
+    	cout << endl << "Enter 15: Find path between 2 nodes";
+    	cout << endl << "Enter 16: Find whether a BT is a BST";
+    	cout << endl << "Enter 17: Swap 2 nos.";
+    	cout << endl << "Enter 18: Find swapped nos. in a BST";
+    	cout << endl << "Enter 19: Find diameter of a BT";
+        cout << endl << "Enter 20: Find whether a BT is ht balanced or not";
+        cout << endl << "Enter 21: Mirror a BT";
+        cout << endl << "Enter 22: Find whether each node is a sum of its children";
+        cout << endl << "Enter 23: Make each node equal to the sum of its children";
+        cout << endl << "Enter 24: Spiral/ZigZag traveral of a tree";
+        cout << endl << "Enter 25: Are two trees isomorphic";
+        cout << endl << "Enter 26: Sum of nodes at odd ht";
+        cout << endl << "Enter 27: First 1 in a boolean BST";
+        cout << endl << "Enter 28: First parent of a node";
+		cout << endl << "Enter 29: Construct BT from inorder, node > LC && RC";
+		cout << endl << "Enter 30: Node with max sum";
+		
+		cout << endl << "Enter 50: Exit";
+        cout << endl << "Enter your choice ";
+
+        cin>>choice;
+        switch(choice)
+        {
+           case 1: cout << "Enter value: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      tree=BT.insert(tree,digit);
+                      cin>>digit;
+                   };
+                   break;
+           case 2: cout << "Enter the number to be searched";
+                   cin>>digit;
+                   BT.search(tree,digit);
+                   break;
+           case 3: cout << endl << "preorder traversing TREE" << endl;
+                   BT.preorder(tree);
+                   break;
+           case 4: cout << endl << "inorder traversing TREE" << endl;
+                   BT.inorder(tree);
+                   break;
+           case 5: cout << endl << "postorder traversing TREE" << endl;
+                   BT.postorder(tree);
+                   break;
+           case 6: cout << "Enter element which do you want delete from  the BT" << endl;
+                   cin>>digit;
+                   BT.deletenode(digit,tree);
+                   break;
+           case 7: BT.showCount();
+                   break;
+           case 8: cout << endl << "highest sum of a node in the TREE is" << endl;
+           		   break;
+           case 9: break;
+           case 10: BT.showSum();
+           		    break;
+           case 11: BT.destroy_tree(tree);
+		   			break;
+		   case 12: cout << endl << "Enter sum of nodes from root to any leaf in the TREE " << endl;
+		   			cin>>findSum;
+		   			hasSum = BT.hasPathSum(tree, findSum);
+				    if (hasSum == 1) cout<<"Path exists with given sum "<<findSum;
+				    else cout<<"No such path";    
+		   		   	break;
+		   case 13: cout << "The paths are" << endl;
+                    BT.printPaths(tree);
+                   	break;
+		   case 14: cout<<"Enter node 1 and node 2"<<endl;
+		   			cin>>node1>>node2;
+					cout << "The LCA is : ";
+                    temp = BT.LCA(tree, node1, node2);
+                    cout<<temp->num<<endl;
+                   	break;
+		   case 15: cout<<"Enter node 1 and node 2"<<endl;
+		   			cin>>node1>>node2;
+					cout<<"Path between "<<node1<<" and "<<node2<<" is :"<<endl;	   	
+                   	listMe = BT.pathbetween2Nodes(tree,node1,node2);
+                   	                   	
+                	for(itr=listMe.begin(); itr!=listMe.end(); itr++)
+					  	cout<<(*itr)->num<<" ";
+                   	break;
+           case 16:	element = BT.isBinaryTree(tree);
+           			if(element == 1)
+           				cout<<"It is a binary tree\n";
+           			else
+		   				cout<<"It isn't a binary tree\n";
+           			break;
+		   case 17: cout<<"Enter node 1 and node 2"<<endl;
+		   			cin>>node1>>node2;
+					BT.swap2nodes(tree, node1, node2);
+		   			break;
+		   case 18: cout<<"The swapped nodes are :";
+		   			BT.swappedNodesBST(tree, inorderList);
+		   			printSwappedNodes(inorderList);
+					break;
+		   case 19: cout<<"The diameter of the binary tree is : ";
+		   			element = BT.diameterOpt(tree, &height);
+		   			cout<<element;
+		   			break;
+		   case 20:	b = BT.isBalanced(tree, &height);
+		   			if(b)
+		   				cout<<"The binary tree is balanced ";
+		   			else
+		   				cout<<"The binary tree is not balanced ";
+		   			break;					
+		   case 21:	BT.mirror(tree);
+		   			break;	
+		   case 22: element = BT.isNodeSumOfChildren(tree);
+		   			if(element == 1)
+           				cout<<"Every node is a sum of its children\n";
+           			else
+		   				cout<<"Every node is not a sum of its children\n";				
+		   			break;
+		   case 23: BT.makeNodeSumOfChildren(tree);
+		   			break;
+		   case 24: cout<<"The spiral traversal is : ";
+		   			BT.spiralTraversal(tree);
+		   			break;
+           case 25: cout << "Enter value: To quit enter 0" << endl;
+                   	cin>>digit;
+                   	while(digit!=0)
+                   	{
+                      tree2=MT.insert(tree2,digit);
+                      cin>>digit;
+                   	};
+                   	cout << endl << "inorder traversing TREE" << endl;
+				    BT.inorder(tree);
+				    cout << endl << "inorder traversing TREE2" << endl;
+				    MT.inorder(tree2);
+				    
+				    b = areIsomorphic(tree, tree2);
+		   			if(b == 1)
+           				cout<<"Trees are isomorphic\n";
+           			else
+		   				cout<<"Trees are not isomorphic\n";				
+		   			break;
+		   case 26: element = BT.sumOfNodesAtOddht(tree);
+		   			cout<<"The sum is : "<<element;
+		   			break;
+		   case 27:	BT.searchFirst1(tree);
+		   			break;
+		   case 28: cout << "Enter the node to find its parent" << endl;
+                   	cin>>digit;
+		   			element = BT.findParent1(tree, digit, prev);
+		   			cout<<"The parent is : "<<element;
+		   			break;
+		   case 29:	cout<<"Enter no. of elements\n";
+					cin>>n;
+		   			cout<<"Enter elements "<<" \n";
+				    for(int i=0; i<n; i++)
+					{
+						cin>>arr[i];
+					}
+					tree = BT.constructBTfromInOrder(arr, 0, n-1);
+					BT.inorder(tree);
+		   			break;
+		   case 30:	BT.maxSubtreeSumNode(tree, maxSum);
+		   			cout<<" "<<maxSum;
+		   			break;
+		   case 50: cout << "END";
+                   	break;
+        };
+  }while(choice!=50);
+  //system("pause");
+  return 0;
+}
+
+void printSwappedNodes(vector<node*> inorderList)
+{
+	for(ilr=inorderList.begin(); ilr != inorderList.end(); ilr++)
+					   {
+					   		cout<<(*ilr)->num<<" ";
+					   		ele++;
+					   }
+					
+					nod1 = 0; nod2 = 0;
+					
+					for(int i = 0; i< ele; i++)
+					{
+						if(i==0)
+						{
+							if(inorderList[i]->num > inorderList[i+1]->num)
+								nod1 = inorderList[0]->num;
+						}
+						else if(i==(ele-1))
+						{
+							if(inorderList[i-1]->num > inorderList[i]->num)
+								nod2 = inorderList[i]->num;
+						}
+						else
+						{
+						
+							if((inorderList[i]->num > inorderList[i+1]->num) && (inorderList[i]->num > inorderList[i-1]->num))
+							{
+								if(nod1==0)
+										nod1 = inorderList[i]->num;
+							}
+							if((inorderList[i]->num < inorderList[i+1]->num) && (inorderList[i]->num < inorderList[i-1]->num))
+							{
+								nod2 = inorderList[i]->num;
+							}
+						}
+					}
+
+					cout<<"\n"<<nod1<<", "<<nod2;
+}
+
+node * findParent(int count, node* tree)
+{
+	int c=0 ;
+	node * temp;
+	queue<node *> que;
+	que.push(tree);
+	while(! que.empty())
+	{
+		temp = que.front();
+		que.pop();
+		c++;
+		if(c==count/2)
+			return temp;
+		que.push(temp->left);
+		que.push(temp->right);
+	}
+	
+}
+
+node * binaryTree::insert(node *tree,long digit)
+{
+	
+	if(tree==NULL)
+      {
+        tree=new node;
+        tree->left=tree->right=NULL;
+        tree->num=digit;
+		count++;        
+        sum+=digit;
+      }
+     else
+	   {
+	   		node * parent, *temp;
+			parent = findParent(count + 1, tree);
+	   		temp = new node;
+	   		temp->left=temp->right=NULL;
+	   		temp->num=digit;
+	   		count++;
+			if(count%2 == 0)
+	   			{
+	   				parent->left = temp;
+	   				
+	   				sum+=digit;
+				}	
+			else
+				{
+					parent->right = temp;
+					sum+=digit;	
+				}	              	   				   		         
+	   }	
+	   return tree;
+}
+
+void binaryTree::deletenode(long digit,node *nodeo)
+{
+    node *r,*q,*p=nodeo,*temp;
+    bool l=false;
+    if(tree==NULL)
+    {
+      cout << endl << "Tree is empty.";
+    }
+
+    //recursively find the node to be deleted
+    if(digit < nodeo->num)
+    {
+       p=nodeo;
+       l=true;
+       deletenode(digit,nodeo->left);
+    }                   
+    if(digit > nodeo->num)
+    {
+       p=nodeo;
+       l=false;
+       deletenode(digit,nodeo->right);
+    }
+
+    q=nodeo;
+    // if the given nodeo is a leaf node it can be safely deleted
+    if((q->right==NULL)&&(q->left==NULL))
+    {
+         if(l==true)
+            p->left=NULL;
+         else
+            p->right=NULL;
+
+         delete q;
+    }                         
+    else 
+    {
+         // If it has one child, then also it can be safely deleted
+         // and replaced by its only child
+         if(q->right==NULL)
+         {
+           r=q->left;
+           if(l==true)
+                p->left=r;
+           else
+                p->right=r;
+           delete q;
+         }                  
+         else if(q->left==NULL)
+         {
+              r=q->right;
+              if(l==true)
+                p->left=r;
+              else
+                p->right=r;
+              delete q;
+         }
+         // If it has two children then we can either
+         // replace it by the value of its immediate successor
+         // or immediate predecessor, we have chosen, the 
+         // immediate successor here
+         else
+         {
+             r=q->right;
+             if(r->left=NULL)
+             {
+                if(l==true)
+                    p->left=r;
+                else
+                    p->right=r;
+             }
+             else
+             {
+                 while(r->left!=NULL)
+                 {
+                  temp=r;
+                  r=r->left;
+                 }
+                 q->num=r->num;
+                 temp->left==NULL;
+                 delete r;
+                 return;                 
+             }
+         }
+    }                                   
+}
+
+void binaryTree::search(node *tree,long digit)
+{
+    if(tree==NULL)
+       cout << "The number does not exits" << endl;
+   else
+    if(digit==tree->num)
+    cout << endl << "Number is " << digit;
+   else
+    if(digit < tree->num)
+       search(tree->left,digit);
+   else
+      search(tree->right,digit);
+}
+
+void binaryTree::preorder(struct node *tree)
+{
+    if(tree!=NULL)
+      {
+        cout << endl << tree->num;
+        preorder(tree->left);
+        preorder(tree->right);
+      }
+}
+
+void binaryTree::inorder(struct node *tree)
+{
+    if(tree!=NULL)
+        {
+        inorder(tree->left);
+        cout << endl << tree->num;
+        inorder(tree->right);
+        }
+}
+
+void binaryTree::postorder(struct node *tree)
+{
+    if(tree!=NULL)
+      {
+        postorder(tree->left);
+        postorder(tree->right);
+        cout << endl << tree->num;
+      }
+
+}
+
+//count no. of nodes
+void binaryTree::showCount()
+{
+     cout << "The no. of nodes are " << count << endl;
+}
+
+//sum of all nodes
+void binaryTree::showSum()
+{
+     cout << "The sum of all the nodes are " << sum << endl;
+}
+
+//Destroy the tree
+void binaryTree::destroy_tree(node *leaf)
+{
+  if(leaf!=NULL)
+  {
+    destroy_tree(leaf->left);
+    destroy_tree(leaf->right);
+    delete leaf;
+  }
+}
+
+/* 
+ Given a tree and a sum, return true if there is a path from the root 
+ down to a leaf, such that adding up all the values along the path 
+ equals the given sum.
+ Strategy: subtract the node value from the sum when recurring down, 
+ and check to see if the sum is 0 when you run out of tree. 
+*/ 
+int binaryTree::hasPathSum(struct node* node, int findSum) { 
+  // return true if we run out of tree and sum==0 
+  if (node == NULL) { 
+    return(findSum == 0); 
+  } 
+  else { 
+  // otherwise check both subtrees 
+    int subSum = findSum - node->num; 
+    return(hasPathSum(node->left, subSum) || 
+           hasPathSum(node->right, subSum)); 
+  } 
+} 
+
+
+/* 
+ Given a binary tree, print out all of its root-to-leaf 
+ paths, one per line. Uses a recursive helper to do the work. 
+*/
+void printPathsRecur(node* , int[] , int );
+void printArray(int[] , int );
+
+ 
+void binaryTree::printPaths(struct node* node) { 
+  int path[40];
+  printPathsRecur(node, path, 0); 
+}
+
+/* 
+ Recursive helper function -- given a node, and an array containing 
+ the path from the root node up to but not including this node, 
+ print out all the root-leaf paths. 
+*/ 
+void printPathsRecur(struct node* node, int path[], int pathLen) 
+{ 
+  if (node==NULL) return;
+
+  // append this node to the path array 
+  path[pathLen] = node->num; 
+  pathLen++;
+
+  // it's a leaf, so print the path that led to here 
+  if (node->left==NULL && node->right==NULL) { 
+    printArray(path, pathLen); 
+  } 
+  else { 
+  // otherwise try both subtrees 
+    printPathsRecur(node->left, path, pathLen); 
+    printPathsRecur(node->right, path, pathLen); 
+  } 
+}
+
+void printArray(int ints[], int len) { 
+  int i;
+  for (i=0; i<len; i++) { 
+    printf("%d ", ints[i]);	
+  } 
+  printf("\n"); 
+} 
+
+
+//Find Least common ancestor
+node* binaryTree::LCA(node *tree, int p, int q)
+{
+	// no root no LCA.
+        if(!tree)
+                return NULL;
+
+        // if either p or q is the root then root is LCA.
+        if(tree->num==p || tree->num==q) {
+                return tree;
+        } else {
+                // get LCA of p and q in left subtree.
+                node * l=LCA(tree->left , p , q);
+
+                // get LCA of p and q in right subtree.
+                node * r=LCA(tree->right , p, q);
+
+                // if one of p or q is in leftsubtree and other is in right
+                // then root it the LCA.
+                if(l && r) {
+                        return tree;
+                }
+                // else if l is not null, l is LCA.
+                else if(l) {
+                        return l;
+                } else {
+                        return r;
+                }
+        }
+}
+
+int pathbetweenNodes(node* tree, int q, list<node*>& listAM)
+{
+	   if(tree == NULL) return 0;
+       if(tree->num == q) 
+       {
+           listAM.push_back(tree);
+           return 1;
+       }
+       if(pathbetweenNodes(tree->left,q,listAM) || pathbetweenNodes(tree->right, q, listAM))
+       {
+            listAM.push_back(tree);
+           return 1;
+       }
+       else
+       {
+           return 0;
+       }
+}
+
+list<node*> binaryTree::pathbetween2Nodes(node *tree, int p, int q)
+{
+		list<node *> listP, listQ;
+		if(!tree)
+                return listP;
+		
+		node * lca = LCA(tree, p, q);
+		
+		if(lca->num == p)
+		{
+			pathbetweenNodes(lca, q, listP);			
+			return listP;
+		}
+		else if(lca->num == q)
+		{
+			pathbetweenNodes(lca, p, listQ);			
+			return listQ;
+		}
+		else 
+		{
+			pathbetweenNodes(lca, q, listP);			
+			pathbetweenNodes(lca, p, listQ);
+			listQ.pop_back();			
+			listQ.reverse();
+			listP.splice(listP.end(),listQ);
+			return listP;
+		}
+}
+
+int binaryTree::isBinaryTree(node * tree)
+{
+	if(tree == NULL) return 1;
+	
+	if(isBinaryTree(tree->left) && isBinaryTree(tree->right))
+	{
+		if(((tree->left !=NULL && (tree->left->num < tree->num)) || tree->left == NULL)
+			&& ((tree->right !=NULL && (tree->right->num > tree->num)) || tree->right == NULL))
+			return 1;
+	} 
+	return 0;
+}
+
+void binaryTree::swap2nodes(node* tree,int node1,int node2)
+{
+	if(tree==NULL) return;
+	if(tree->num == node1)
+		tree->num = node2;
+	else if(tree->num == node2)
+		tree->num = node1;
+	swap2nodes(tree->left, node1, node2);
+	swap2nodes(tree->right, node1, node2);
+}
+
+void binaryTree::swappedNodesBST(node *tree, vector<node*>& inorderList)
+{
+	if(tree==NULL) return;
+	swappedNodesBST(tree->left, inorderList);
+	inorderList.push_back(tree);
+	swappedNodesBST(tree->right, inorderList);
+	
+}
+
+int binaryTree::height(struct node* node)
+{
+   /* base case tree is empty */
+   if(node == NULL)
+       return 0;
+ 
+   return 1 + max(height(node->left), height(node->right));
+} 
+
+//diameter of a tree. time complexity = O(n2)
+int binaryTree::diameter(node* tree)
+{
+	if (tree == 0)
+     return 0;
+ 
+  int lheight = height(tree->left);
+  int rheight = height(tree->right);
+ 
+  int ldiameter = diameter(tree->left);
+  int rdiameter = diameter(tree->right);
+ 
+  /* Return max of following three
+   1) Diameter of left subtree
+   2) Diameter of right subtree
+   3) Height of left subtree + height of right subtree + 1 */
+  return max(lheight + rheight + 1, max(ldiameter, rdiameter));
+}
+
+//time complexity = O(n)
+int binaryTree::diameterOpt(struct node *root, int* height)
+{
+  /* lh --> Height of left subtree
+      rh --> Height of right subtree */
+  int lh = 0, rh = 0;
+  
+  /* ldiameter  --> diameter of left subtree
+      rdiameter  --> Diameter of right subtree */
+  int ldiameter = 0, rdiameter = 0;
+  
+  if(root == NULL)
+  {
+    *height = 0;
+     return 0; /* diameter is also 0 */
+  }
+  
+  ldiameter = diameterOpt(root->left, &lh);
+  rdiameter = diameterOpt(root->right, &rh);
+  
+  *height = max(lh, rh) + 1;
+  
+  return max(lh + rh + 1, max(ldiameter, rdiameter));
+}
+
+//is Balanced - normally O(n2) but this is O(n)
+bool binaryTree::isBalanced(struct node *root, int* height)
+{
+  /* lh --> Height of left subtree 
+     rh --> Height of right subtree */   
+  int lh = 0, rh = 0;  
+ 
+  /* l will be true if left subtree is balanced 
+    and r will be true if right subtree is balanced */
+  int l = 0, r = 0;
+     
+  if(root == NULL)
+  {
+    *height = 0;
+     return 1;
+  }
+ 
+  l = isBalanced(root->left, &lh);
+  r = isBalanced(root->right,&rh);
+ 
+  *height = (lh > rh? lh: rh) + 1;
+     
+  /* If difference between heights of left and right 
+     subtrees is more than 2 then this node is not balanced
+     so return 0 */
+  if((lh - rh >= 2) || (rh - lh >= 2))
+    return 0;
+     
+  else return l&&r;
+}
+
+//mirror a BT
+void binaryTree::mirror(node *tree)
+{
+	if(tree==NULL)
+		return;
+	node * temp;
+	mirror(tree->left);
+	mirror(tree->right);
+	temp = tree->left;
+	tree->left=tree->right;
+	tree->right=temp;
+}
+
+//whether each tree is sum of its children
+int binaryTree::isNodeSumOfChildren(node *tree)
+{
+	if(tree==NULL)
+		return 1;
+	
+	int l = isNodeSumOfChildren(tree->left);
+	int r = isNodeSumOfChildren(tree->right);
+	int ln = 0, rn = 0;
+	if(tree->left != NULL)
+		ln = tree->left->num;
+	if(tree->right != NULL)
+		rn = tree->right->num;
+	if(ln == 0 && rn == 0)
+		return(l&&r);
+	else if(tree->num == ln + rn)
+		return(l&&r);
+	else
+		return 0;
+}
+//make each node equal to sum of its children
+void binaryTree::makeNodeSumOfChildren(node *tree)
+{
+	if(tree==NULL)
+		return;
+	
+	makeNodeSumOfChildren(tree->left);
+	makeNodeSumOfChildren(tree->right);
+	int ln = 0, rn = 0;
+	if(tree->left != NULL)
+		ln = tree->left->num;
+	if(tree->right != NULL)
+		rn = tree->right->num;
+	if(ln == 0 && rn == 0)
+		return;
+	else if(tree->num == ln + rn)
+		return;
+	else
+	{
+		tree->num = ln + rn;
+		return;
+	}
+}
+
+void binaryTree::spiralTraversal(node *tree)
+{
+	if(tree==NULL)
+		return;
+	stack<node *> currS, nextS;
+	bool leftToRight = true;
+	currS.push(tree);
+	while(! currS.empty())
+	{
+		node *currNode = currS.top();
+    	currS.pop();
+    	if (currNode) {
+	      	cout << currNode->num << " ";
+	      	if (leftToRight) {
+	        	nextS.push(currNode->left);
+	        	nextS.push(currNode->right);
+	      	} 
+			else {
+	        	nextS.push(currNode->right);
+	        	nextS.push(currNode->left);
+	      	}
+    	}
+	    if (currS.empty()) {
+	      cout << endl;
+	      leftToRight = !leftToRight;
+	      swap(currS, nextS);
+	    }
+	}
+}
+
+bool areIsomorphic(node *tree, node* tree2)
+{
+	if(tree==NULL && tree2==NULL)
+		return true;
+	else if(tree==NULL || tree2==NULL)
+		return false;
+	bool L,R;
+	if(tree->left == NULL && tree2->left == NULL)
+	{
+			L = true;
+			R = areIsomorphic(tree->right, tree2->right);
+	}
+	else if(tree->left == NULL && tree2->right == NULL)
+	{
+			L = true;
+			R = areIsomorphic(tree->right, tree2->left);
+	}
+	if(tree->right == NULL && tree2->right == NULL)
+	{
+			R = true;
+			L = areIsomorphic(tree->left, tree2->left);
+	}
+	else if(tree->right == NULL && tree2->left == NULL)
+	{
+			R = true;
+			L = areIsomorphic(tree->left, tree2->right);
+	}
+	else if((tree->left->num == tree2->left->num)&&(tree->right->num == tree2->right->num))
+	{
+		L = areIsomorphic(tree->left, tree2->left);
+		R = areIsomorphic(tree->right, tree2->right);
+	}
+	else if((tree->left->num == tree2->right->num)&&(tree->right->num == tree2->left->num))
+	{
+		L = areIsomorphic(tree->left, tree2->right);
+		R = areIsomorphic(tree->right, tree2->left);
+	}
+	return(L&&R);                   	
+}
+
+void OddhtSum(node *, int , int &);
+
+int binaryTree::sumOfNodesAtOddht(node *tree)
+{
+	int level = 1, sum=0;
+	OddhtSum(tree, level, sum);
+	return sum;
+}
+
+void OddhtSum(node *tree, int level, int &sum)
+{
+	if(tree==NULL)
+		return;
+	if(level%2 !=0)
+		sum += tree->num;
+	//else
+	//	sum -= tree->num;
+	OddhtSum(tree->left, level+1, sum);
+	OddhtSum(tree->right, level+1, sum);
+}
+
+int binaryTree::searchFirst1(node * tree)
+{
+	int l,r;
+	if(tree==NULL)
+		return 0;
+	if(tree->num == 1)
+	{
+		if(tree->left == NULL)
+			return 1;
+		else
+		{
+			cout<<1<<" ";
+			return(searchFirst1(tree->left));	
+		}
+	}
+	else if(tree->num == 0)
+	{
+		cout<<0<<" ";
+		return(searchFirst1(tree->right));
+	}	
+	return 0;
+}
+
+int binaryTree::findParent1(node * tree, int k, node * parent)
+{
+	if(tree == NULL)
+		return 0;
+	int l,r;
+	if(tree->num == k)
+	{
+		if(parent != NULL)
+		{
+			return (parent->num);
+		}
+		else return -1;
+	}
+	l = (findParent1(tree->left, k, tree));	
+	if(l != 0) return l;
+	r = (findParent1(tree->right, k, tree));
+	if(r != 0) return r;
+	
+	return 0;
+}
+
+node * binaryTree::constructBTfromInOrder(int arr[], int min, int max)
+{
+	if(min>max) return NULL;
+	int maxi, maxVal = 0;
+	for(int i = min; i<= max; i++)
+	{
+		if(arr[i] > maxVal)
+		{
+			maxi = i;
+			maxVal = arr[i];
+		}
+	}
+	node * newnode = new node;
+	newnode->left = newnode->right = NULL;
+	newnode->num = arr[maxi];
+	newnode->left = constructBTfromInOrder(arr, min, maxi-1);
+	newnode->right = constructBTfromInOrder(arr, maxi+1, max);
+	return newnode;
+}
+
+int binaryTree::maxSubtreeSumNode(node * tree, int &maxG)
+{
+	if(tree == NULL)
+		return 0;
+	int l,r,max, num;
+	l = (maxSubtreeSumNode(tree->left, maxG));	
+	r = (maxSubtreeSumNode(tree->right, maxG));
+	max = l>r? l : r;
+	num = tree->num +l +r;
+	if(max > (num))
+		return max;
+	else
+	{
+		maxG = tree->num;
+		return num;	
+	}
+}
