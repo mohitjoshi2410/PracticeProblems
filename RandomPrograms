@@ -1,0 +1,233 @@
+#include<iostream>
+#include<Stack>
+#include<map>
+#include<cmath>
+#include<string>
+#include<vector>
+#include<sstream>
+using namespace std;
+
+void factorize(int , map<int,int> & );
+int calPower(int, int);
+float glassProblem(int, int, int);
+int findNextGreater(int);
+void findPrimeSets(int);
+
+int main()
+{
+  	int n,m,key,x,choice;
+	bool b;
+    int power;
+    float litre;
+	
+	do
+	{
+		cout << endl << "Enter 1: Enter number";
+        cout << endl << "Enter 2: Find power of a number ";
+        cout << endl << "Enter 3: Glass Problem : Find water in ith row and jth glass ";
+        cout << endl << "Enter 4: Find next greater no. made by digits of the entered no. ";
+        cout << endl << "Enter 5: Find all sets of prime nos. s.t. p*q < no. ";
+        
+		cout << endl << "Enter 12: Exit";
+		cout << endl << "Enter your choice ";
+		
+        cin>>choice;
+        switch(choice)
+        {
+           	case 1:		cout<<"Enter the no.\n";
+					    cin>>n;
+						break;
+			case 2:		cout<<"\n Enter the power of no. :"<<n<<"\n";
+						cin>>power;
+						key = calPower(n, power);
+						cout<<"The result of "<<n<<" to the power "<<power<<" is : "<<key<<endl;
+						break;
+			case 3:		cout<<"Enter X, i, j\n";
+					    cin>>x>>m>>n;						
+						litre = glassProblem(x, m, n);
+						cout<<"The amount is : "<<litre<<"\n";
+						break;
+			case 4:		key = findNextGreater(n);
+						cout<<"The next greater no. is : "<<key;
+						break;
+			case 5:		findPrimeSets(n);
+						break;
+			case 12:	cout<<"END";
+						break;
+		}
+					
+	}while(choice!=12);
+	
+	
+	//system("pause");
+  return 0;
+}
+
+void factorize(int n, map<int,int> & f)
+{
+	for(int i = 2;i<=n;i++)
+    {
+        if(n%i == 0)
+        {   
+			if(f.find(i) == f.end())
+    		{
+    			f.insert(std::make_pair(i, 1));
+			}
+			else
+	 		{
+	 			(f.find(i))->second = (f.find(i))->second +1;
+	 		}
+            if (n!=i)
+            {
+                cout << "*";
+                factorize(n/i, f);
+                return;
+            }
+        }
+    } 
+    return;
+}
+
+int calPower(int n, int power)
+{
+	int t=n, st=n;
+	map<int,int> factors;
+	map<int,int>::iterator itr;
+	factorize(power, factors);
+	
+	for(itr=factors.begin();itr!=factors.end();itr++)
+	{
+		cout<<itr->first<<" ";
+		for(int i = 0; i < (itr)->second ; i++)
+		{
+			for(int j = 0; j < (itr)->first - 1; j++)
+			{
+					st=st*t;	
+			}
+			t=st;
+		}
+	}
+	return st;
+}
+/*
+T -> total liquid in ltrs poured at 1st glass
+L -> level (considering each glass row as a level) 
+C -> Capacity of individual glass
+arr -> array of glasses(i.e. total glasses = L * (L + 1)  / 2
+
+void pour_liquid(float *arr, int T, int L, int C)
+{
+	int level = 0, element = 0;
+
+	*(arr + 0) = T;/* POURING T ltrs here */
+/*	for (level = 1; level <= L; ++level)
+		for (element = ((level * (level + 1)) / 2 ) - level; element < (level * (level + 1) / 2); ++element)
+		{
+			if ((C < *(arr + element)) && (level != L))
+			{
+				*(arr + element + level) += ((*(arr + element) - C) / 2);
+				*(arr + element + level + 1) += ((*(arr + element) - C) / 2);
+				*(arr + element) = C;
+			}
+			else
+			{
+				if ((C < *(arr + element)) && (level = L))
+				       *(arr + element) = C;/* liquid spilled over at last level glasses and wasted */ 
+/*			}	
+		}
+		
+}*/
+
+float glassProblem(int x, int i, int j)
+{
+	int left = x-(i*(i-1)/2);
+	if( left <= 0 )
+		return 0;
+	else if(x-(i*(i+1)/2) >= 0 )
+		return 1;
+	else
+	{
+		int c = 1;
+		if(j==1 || j==i) return (c*left/(pow(2,i-1)));
+		for(int k=1;k<i-1;k++)
+		{
+			c = (c*(i-k)/k) ;
+			if(j==k+1) return (c*left/(pow(2,i-1)));
+		}
+	}
+}
+
+int findNextGreater(int n)
+{
+	/*stringstream ss;
+	ss << n;
+	string str = ss.str();*/
+	vector<int> v;
+	while(n != 0)
+	{
+    	v.push_back(n% 10);
+    	n /= 10;
+	}
+	for(int i=0; i<v.size(); i++)
+	{
+		if(v[i] > v[i+1])
+		{
+			for(int j = 0; j < i+1; j++)
+			{
+				if(v[j] > v[i+1])
+				{
+					v[j] = v[j] - v[i+1];
+					v[i+1] = v[j] + v[i+1];
+					v[j] = v[i+1] - v[j];
+					break;
+				}
+			}
+			for(int j = 0, k = i; j < k; j++, k--)
+			{
+				v[j] = v[j] - v[k];
+				v[k] = v[j] + v[k];
+				v[j] = v[k] - v[j];
+				cout <<v[j]<<" "<<v[k]<<"\n";
+			}
+			break;
+		}
+	}
+	for(int i=v.size()-1; i>=0; i--)
+	{
+		n =  n*10 + v[i];
+	}
+	return n;
+}	
+
+void findPrimeSets(int n)
+{
+	int arr[10], i, prime;
+	for(int k =2; k<=n/2;k++)
+	{
+		prime=1;
+        for(int j=2;j<k;j++)
+        {
+            if(k%j==0)
+            {
+                prime=0;
+                break;
+            }
+        }
+
+        if(prime==1)
+        {
+        	arr[i]=k;i++;
+        }
+	}
+	for(int k=0; k<i; k++)
+	{
+		prime = n/arr[k];
+		for(int j=k+1; j<i; j++)
+		{
+			if(arr[j] <= prime)
+				cout<<arr[k]<<"*"<<arr[j]<<" ";
+			else
+				break;
+		}
+	}
+}
