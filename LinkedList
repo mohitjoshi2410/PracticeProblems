@@ -1,0 +1,653 @@
+#include<iostream>
+#include<Stack>
+using namespace std;
+
+struct node
+{
+    int num;
+    node *right;
+}*head = NULL;
+
+struct node * head2 = NULL;
+struct node * head3 = NULL;
+
+class searchTree
+{
+ private:
+         int count;
+         long sum;
+ public: 
+ 		node * insert(node*,int);
+        void display(node *);
+        void replaceK(node*,int);
+        void invertK(node *,int);
+        void reverseList(node* &);
+        void replaceList(node* &);
+        node * AddTwoNumbersThruLL(node *, node*);
+        node * AddTwoNumbersThruLL1(node *, node*);
+        node * arrangeAParticularList(node*);
+        void revertKthElementsFromEnds(node *&, int);
+        void showCount();
+        void showSum();
+        void replaceArray();
+        searchTree()
+        {
+            head=NULL;
+            head2=NULL;
+            head3=NULL;
+            count=0;
+            sum=0;
+        }
+};
+
+
+int main()
+{
+	int choice;
+    int digit;
+    int k;
+    int element;
+    int maxSum =0;
+
+    searchTree ST;
+    do
+    {
+        cout << endl << "Enter 1: Insert a node in the LL";
+        cout << endl << "Enter 2: Display the LL";
+        cout << endl << "Enter 3: Replace 1 with k, k+1 with 2k,... in the LL";
+        cout << endl << "Enter 4: Revert each K nodes in the LL";
+        cout << endl << "Enter 5: Add two numbers through LLs";
+        cout << endl << "Enter 6: Add two numbers through LLs w/o reversing";
+		cout << endl << "Enter 7: Reverse the list";
+        cout << endl << "Enter 8: Replace adjacent nodes";
+        cout << endl << "Enter 9: Sort LL with elements 1,2,3 in one pass";
+        cout << endl << "Enter 10: Replace kth nodes from ends";
+        
+		cout << endl << "Enter 15: Inde : replace Array";
+        
+        cout << endl << "Enter 30: Exit";
+        cout << endl << "Enter your choice ";
+
+        cin>>choice;
+        switch(choice)
+        {
+           case 1: cout << "Enter value: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      head=ST.insert(head,digit);
+                      cin>>digit;
+                   };
+                   break;
+           case 2: cout << "The list is : \n";
+                   ST.display(head);
+                   break;
+           case 3: cout << "Enter value of K" << endl;
+                   cin>>k;
+                      ST.replaceK(head,k);
+                   break;
+		   case 4: cout << "Enter value of K" << endl;
+                   cin>>k;
+                      ST.invertK(head,k);
+                   break;
+           case 5: cout << "Enter value for 1st number: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      head=ST.insert(head,digit);
+                      cin>>digit;
+                   };
+                   cout << "Enter value for 2nd number: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      head2=ST.insert(head2,digit);
+                      cin>>digit;
+                   };
+                   ST.display(head);
+                   cout<<"\n";
+				   ST.display(head2);
+                   head3 = ST.AddTwoNumbersThruLL(head,head2);
+                   cout<<"The summation in list format is :"<<endl;
+				   ST.display(head3);
+				   break;
+           case 6: cout << "Enter value for 1st number: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      head=ST.insert(head,digit);
+                      cin>>digit;
+                   };
+                   cout << "Enter value for 2nd number: To quit enter 0" << endl;
+                   cin>>digit;
+                   while(digit!=0)
+                   {
+                      head2=ST.insert(head2,digit);
+                      cin>>digit;
+                   };
+                   ST.display(head);
+                   cout<<"\n";
+				   ST.display(head2);
+                   head3 = ST.AddTwoNumbersThruLL(head,head2);
+                   cout<<"The summation in list format is :"<<endl;
+				   ST.display(head3);
+				   break;
+		   case 7: cout<<"The reversed list is : "<<endl;
+		   		   ST.reverseList(head);
+		   		   ST.display(head);
+				   break;
+		   case 8: cout<<"The replaced list is : "<<endl;
+		   		   ST.replaceList(head);
+		   		   ST.display(head);
+				   break;
+		   case 9: head = ST.arrangeAParticularList(head);
+		   		   ST.display(head);
+		   		   break;
+		   case 10: cout <<"Enter value for k" << endl;
+                   	cin>>k;
+                   	ST.revertKthElementsFromEnds(head, k);			  
+                   	ST.display(head);
+					break;  
+		   case 15: ST.replaceArray();
+		   			break;
+		   case 30: cout << "END";
+                   break;
+        };
+  }while(choice!=30);
+  //system("pause");
+  return 0;
+}
+
+// Add two numbers with reversing the lists
+node * searchTree::AddTwoNumbersThruLL(node * head, node * head2)
+{
+	int carry = 0,sum = 0;
+	searchTree ST;
+	node * temp, * head3, * prev;
+	ST.reverseList(head);
+	ST.reverseList(head2);
+	
+	while(head!=NULL || head2!=NULL || carry == 1)
+	{
+		sum = carry + (head? head->num : 0) + (head2? head2->num : 0);
+		carry = (sum>=10)? 1 : 0;
+		sum = sum%10;
+		
+		if(head==NULL && head2==NULL && carry ==1)
+		{
+			sum=carry;
+		}
+		temp = new node;
+		temp->right = NULL;
+		temp->num = sum;
+		
+		if (head3 == NULL) head3 = temp;
+		else prev->right = temp;
+		
+		prev = temp;
+			
+		if (head) head = head->right;
+		if (head2) head2 = head2->right; 
+	}
+	ST.reverseList(head3);
+	return head3;
+}
+
+// Add two numbers without reversing the lists
+node * searchTree::AddTwoNumbersThruLL1(node * head, node * head2)
+{
+	int carry = 0,sum = 0, count1, count2;
+	searchTree ST;
+	node * temp, * head3, * prev, *trav1 = head, *trav2 = head2;
+
+	while(trav1->right!=NULL)
+	{
+		count1++;
+		trav1=trav1->right;
+	}
+	while(trav2->right!=NULL)
+	{
+		count2++;
+		trav2=trav2->right;
+	}
+	
+	if(count2>count1)
+	{
+		trav1=head;
+		head=head2;
+		head2=trav1;
+		
+		sum=count1;
+		count1=count2;
+		count2=sum;
+		sum=0;
+	}
+	
+	while(head!=NULL || head2!=NULL)
+	{
+		
+		if(count1>count2)
+		{
+			sum = (head? head->num : 0);
+			
+			temp = new node;
+			temp->right = NULL;
+			temp->num = sum;
+
+			if (head3 == NULL) head3 = temp;
+			else prev->right = temp;
+			
+			prev = temp;
+				
+			if (head) head = head->right;	
+		}
+		else
+		{
+			sum = (head? head->num : 0) + (head2? head2->num : 0);
+			carry = (sum>=10)? 1 : 0;
+			sum = sum%10;
+			
+			temp = new node;
+			temp->right = NULL;
+			temp->num = sum;
+
+			if (head3 == NULL) head3 = temp;
+			else prev->right = temp;
+			
+			if(carry>0)
+			{
+				if(prev->num!=9)
+					prev->num=prev->num+carry;
+				else
+				{
+					trav1 = head3;
+					trav2 = NULL;
+					node* temp22 = NULL, *prev2=NULL;
+					while(trav1!=prev)
+					{
+						if((trav1->num == 9) && (trav2->num != 9))
+						{
+							if((trav1->right->num != 9) && (trav1->right == prev))
+								{trav2 = trav1;prev2=temp22;}
+							else if(trav1->right->num == 9)
+								{trav2 = trav1;prev2=temp22;}
+							else if(trav1->right->num != 9 && trav1->right != prev)
+								trav2 = NULL;
+						}
+						if(trav1->num !=9)
+						{
+							trav2=NULL;
+						}
+						temp22=trav1;
+						trav1=trav1->right;
+					}
+					if(trav1==prev && trav2==NULL && prev->num==9)
+					{
+						trav2=prev;
+						prev2=temp22;
+					}
+					if(trav2!=NULL)
+					{
+						prev2->num=prev2->num+1;
+						while(trav2!=prev)
+						{
+							trav2->num=0;							
+							trav2=trav2->right;
+						}
+						prev->num=0;
+					}
+				}
+			}
+			
+			prev = temp;
+				
+			if (head) head = head->right;
+			if (head2) head2 = head2->right; 
+		}
+		
+
+	}
+	return head3;
+}
+
+//reverse a list
+void searchTree::reverseList(node* & head)
+{
+	node * temp = head;
+	node * next;
+	node * prev = NULL;
+	while(temp!=NULL)
+	{
+		next = temp->right;
+		temp->right = prev;
+		prev = temp;	
+		if(next == NULL)
+			head = temp;
+		temp = next;
+	}
+}
+
+node * searchTree::insert(node *head,int digit)
+{
+	node * temp = head;
+	if(temp==NULL)
+      {
+		node *  newnode = new node;
+        newnode->right=NULL;
+        newnode->num=digit;
+        head = newnode;
+		count++;
+      }
+     else
+      {
+      	while(temp->right!=NULL)
+      	{
+      		temp = temp->right;
+      	};
+        node * newnode=new node;
+        newnode->right=NULL;
+        newnode->num=digit;
+        temp->right=newnode;
+        count++;
+      }
+	 return(head);
+}
+
+void searchTree::display(node *head)
+{
+node * temp = new node;
+        
+    if(head==NULL)
+      {
+        cout<<"Empty List \n";
+      }
+     else
+      {
+      	temp = head;
+      	while(temp!=NULL)
+      	{
+      		cout<<temp->num<<"->";
+			  temp = temp->right;
+      		
+      	}
+      }
+}
+
+void getBufferValues(int noOfNodes, node* bufferStart, node * bufferEnd, int k)
+{
+	node * temp = head;
+	int c=1;
+		while(c<=noOfNodes && temp->right != NULL)
+		{
+			while((c%k != 0)  && (temp->right!= NULL))
+	      	{
+	      		temp = temp->right;
+	      		c++;
+	      	};
+	      	if ((c<noOfNodes) || (c%k==0))
+			{
+				bufferEnd = temp;
+					
+				//replace 1 with K, K+1 with 2K, ...
+				bufferStart->num = bufferEnd->num - bufferStart->num;
+				bufferEnd->num = bufferEnd->num - bufferStart->num;
+				bufferStart->num = bufferEnd->num + bufferStart->num;
+				
+				if(temp->right != NULL)
+			    {
+			    	bufferStart = temp->right;
+			    	temp = temp->right;
+			    	c = c+1;
+			    }
+			}
+		}		
+}
+
+void searchTree::replaceK(node *head,int k)
+{
+	int noOfNodes=0,c=0;
+	node * bufferStart = head;
+	node * bufferEnd = new node;
+	
+	node * temp = head;
+	while(temp->right!=NULL)
+    {
+    	temp = temp->right;
+    	noOfNodes++;
+    };
+
+	if(noOfNodes<k)
+      {
+		cout<<"k is too big or no of nodes are less";
+      }
+    else
+      {
+		getBufferValues(noOfNodes, bufferStart, bufferEnd, k);
+        
+      }
+}
+
+
+void getInvertedValues(int noOfNodes, node* bufferStart, node * bufferEnd, int k)
+{
+	node * temp = head;
+	stack<int> S1;
+	int c=1;
+		while(c<=noOfNodes && temp->right != NULL)
+		{
+			while((c%k != 0)  && (temp->right!= NULL))
+	      	{
+	      		S1.push(temp->num);
+				  temp = temp->right;
+	      		
+				  c++;
+	      	};
+	      	S1.push(temp->num);
+	      	
+	      	if ((c<noOfNodes) || (c%k==0))
+			{
+				bufferEnd = temp;
+				
+				while(!S1.empty())
+				{
+					bufferStart->num = S1.top();
+					S1.pop();
+					bufferStart=bufferStart->right;
+				}
+				
+				if(temp->right != NULL)
+			    {
+			    	bufferStart = temp->right;
+			    	temp = temp->right;
+			    	c = c+1;			    	
+			    }
+			}
+		}		
+}
+
+void searchTree::invertK(node *head,int k)
+{
+	int noOfNodes=0,c=0;
+	node * bufferStart = head;
+	node * bufferEnd = new node;
+	
+	node * temp = head;
+	while(temp->right!=NULL)
+    {
+    	temp = temp->right;
+    	noOfNodes++;
+    };
+
+	if(noOfNodes<k)
+      {
+		cout<<"k is too big or no of nodes are less";
+      }
+    else
+      {
+		getInvertedValues(noOfNodes, bufferStart, bufferEnd, k);
+        
+      }
+}
+
+
+void searchTree::replaceList(node* &head)
+{
+	node* temp = head;
+	node* next, *prev;
+	while(temp!=NULL && temp->right!=NULL)
+		{
+			next = temp->right;
+			if(temp == head) head = next;
+			temp->right = next->right;
+			next->right = temp;
+			if(prev != NULL)prev->right = next;
+			prev = temp;
+			temp=temp->right;
+		}
+}
+
+node* searchTree::arrangeAParticularList(node* head)
+{
+	node* temp = head;
+	node* prevOfThree = NULL, *firstThree = NULL, *prev = NULL;
+	
+	while(temp!=NULL)
+		{
+			if(temp->num == 1)
+			{
+				if(prev!=NULL)
+				{
+					 prev->right = temp->right;
+					 temp->right = head;
+				}
+				if(head->num == 3) prevOfThree = temp;
+				head = temp;
+				if(prev!=NULL) temp = prev->right;				
+				else{
+					prev = temp;
+					temp = temp->right;
+				} 
+			}
+			else if(temp->num == 2)
+			{
+				if(firstThree == NULL)
+				{
+					prev = temp;
+					temp = temp->right;
+				}
+				else
+				{
+					if(prevOfThree == NULL){
+						prevOfThree = temp;
+						head = temp;												
+					} 
+					else prevOfThree->right = temp;
+					prev->right = temp->right;
+					temp->right = firstThree;
+					prevOfThree = temp;
+					temp = prev->right;
+				}
+			}
+			else if(firstThree == NULL && temp->num == 3){
+				firstThree = temp; 
+				prevOfThree = prev;
+				prev = temp;
+				temp = temp->right;
+			} 
+			else if(temp->num == 3)
+			{
+				prev->right = temp->right;
+				temp->right = firstThree;
+				firstThree = temp;
+				if(prevOfThree == NULL)
+				{
+					 head = temp;
+				}
+				else prevOfThree->right = temp;
+				temp = prev->right;
+			}
+		}
+		return head;
+}
+
+void searchTree::revertKthElementsFromEnds(node * &head, int k)
+{
+	int c=1,count=1;
+	node *prevK, *eleK, *prev, *temp = head;
+	while(temp->right !=NULL)
+	{
+		prev = temp;
+		temp = temp->right;
+		count++;
+	}
+	if(k>count) return;
+	if(k==1)
+	{
+		eleK = head->right;
+		temp->right = eleK;
+		prev->right = head;
+		prev->right->right = NULL;
+		head = temp;
+		return;
+	}
+	eleK = NULL;
+	prev = NULL;
+	temp = head;
+	while(c<=count-k+1)
+	{
+
+		if(c == k)
+		{
+			prevK = prev;
+			eleK = temp;
+		}
+		if(c == count-k+1)
+		{
+			prevK->right = temp;
+			prev->right = eleK;
+			prevK = temp->right;
+			temp->right = eleK->right;
+			prev->right = eleK;
+			eleK->right = prevK;
+			return;
+		}
+		prev = temp;
+		temp = temp->right;
+		c++;
+	}
+}
+
+//******************************************************//
+//***************independent codes**********************//
+//******************************************************//
+//replace each element with first next greater element
+void searchTree::replaceArray()
+{
+	int ar[20],n;
+	cout<<"enter no. of elements\n";
+	cin>>n;
+	cout<<"\nenter all elements\n";
+	for(int i = 0; i<n; i++)
+		cin>>ar[i];
+	cout<<"\nAll elements are\n";
+	for(int i = 0; i<n; i++)
+		cout<<ar[i];
+	//exchange elements
+	for(int i = 0; i<n; i++)
+	{
+		for(int j = i; j<n; j++)
+			{
+				if(ar[i]<ar[j])
+					{
+						ar[i] = ar[j] - ar[i];
+						ar[j] = ar[j] - ar[i];
+						ar[i] = ar[j] + ar[i];
+						break;
+					}
+			}
+	}
+	cout<<"\nAll exchanged elements are\n";
+	for(int i = 0; i<n; i++)
+		cout<<ar[i];
+			
+}
